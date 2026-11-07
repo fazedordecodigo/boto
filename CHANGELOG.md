@@ -2,7 +2,15 @@
 
 ## Unreleased
 
+### Fixed
+- Keep badge expiry timers bound to the browser's global timer API, preventing a WebKit
+  exception from stopping pending-approval notification delivery.
+- Request macOS badge authorization so pending-approval Dock counts can appear. Existing
+  installations may need to enable Badge application icon in Boto's notification settings.
+
 ### Added
+- Pending-approval badges on the macOS Dock, Windows taskbar and supported Linux launchers,
+  independent of popup notification mute.
 - Windows x64 per-user installer and Linux x64 AppImage/deb releases, alongside macOS builds.
 - Cross-platform daemon builds, Windows CLI spawning and PATH resolution, browser discovery,
   and platform-secure vault key storage.

@@ -24,12 +24,14 @@
 Boto is a local-first desktop app for a **team of AI bots** that work together on your
 everyday tasks: researching the web, organizing files, drafting e-mails and documents,
 and using your connected apps. Each bot has its own name, role, memory and chat — they
-message each other, delegate work and share a workspace, and ask before doing anything
-consequential.
+message each other, delegate work and share a workspace, and ask before sensitive actions
+in your connected apps.
 
 Everything runs on your machine. Bots, chats and secrets stay in `~/Boto` (or the
-platform equivalent), secrets live in an encrypted vault, and nothing is sent or written
-on your behalf without your approval. The bots' brains are the AI agents you already use —
+platform equivalent) and secrets live in an encrypted vault. Connected-app actions that
+send, publish, pay, book or delete wait for your approval; other tools, including the
+bot's web browser (which can type into and submit forms), run without asking unless you
+add an "ask" approval rule for them. The bots' brains are the AI agents you already use —
 Claude Code, Codex, Devin, Cursor, Grok, OpenCode and Gemini (ACP).
 
 ## Features

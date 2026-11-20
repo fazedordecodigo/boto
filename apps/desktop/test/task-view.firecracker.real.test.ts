@@ -23,6 +23,7 @@ import {
   makeFirecrackerHostRoot,
   removeFirecrackerHostRoot,
 } from "../../../packages/host/test/firecracker-fixtures";
+import { chrome } from "./chrome";
 import { startVite } from "./vite";
 
 const artifacts = resolve(process.env.BOTO_FC_ARTIFACTS ?? join(homedir(), ".boto/firecracker"));
@@ -127,7 +128,7 @@ test.skipIf(!enabled)(
       BOTO_VAULT_KEY: "12".repeat(32),
     });
     const vite = await startVite();
-    const browser = await chromium.launch({ channel: "chrome", headless: true });
+    const browser = await chromium.launch({ ...chrome, headless: true });
     const client = await DaemonClient.connect(daemon.port, token);
     const shots = process.env.BOTO_TASK_SHOTS;
     if (shots) mkdirSync(shots, { recursive: true });

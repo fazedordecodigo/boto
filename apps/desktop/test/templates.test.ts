@@ -13,6 +13,7 @@ import {
   startDaemon,
   stopDaemon,
 } from "../../../packages/daemon/test/helpers";
+import { chrome } from "./chrome";
 import { startVite } from "./vite";
 
 let daemon: DaemonHandle;
@@ -35,7 +36,7 @@ beforeAll(async () => {
   const seeded = (await rpc.request("agents.list", {})).find((agent) => agent.isDefault)!;
   await rpc.request("agents.update", { id: seeded.id, name: "Modelos", provider: "devin" });
   vite = await startVite();
-  browser = await chromium.launch({ channel: "chrome", headless: true });
+  browser = await chromium.launch({ ...chrome, headless: true });
 }, 30_000);
 
 afterAll(async () => {

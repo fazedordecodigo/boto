@@ -10,6 +10,7 @@ import {
   stopDaemon,
   tmp,
 } from "../../../packages/daemon/test/helpers";
+import { chrome } from "./chrome";
 import { startVite } from "./vite";
 
 let browser: Browser;
@@ -54,7 +55,7 @@ beforeAll(async () => {
   rpc = await DaemonClient.connect(daemon.port, token);
   await rpc.request("onboarding.complete", {});
   vite = await startVite();
-  browser = await chromium.launch({ channel: "chrome", headless: true });
+  browser = await chromium.launch({ ...chrome, headless: true });
 }, 30000);
 
 afterAll(async () => {
@@ -119,10 +120,12 @@ test("real settings: provider catalog, masked keys, profile, memories, appearanc
     );
     await p.locator("#st-tab-provider").focus();
     await p.keyboard.press("ArrowUp");
-    expect(await p.locator("#st-tab-privacy").getAttribute("aria-selected")).toBe("true");
+    expect(await p.locator("#st-tab-updates").getAttribute("aria-selected")).toBe("true");
     await p.keyboard.press("ArrowRight");
     expect(await p.locator("#st-tab-provider").getAttribute("aria-selected")).toBe("true");
     await p.keyboard.press("End");
+    expect(await p.locator("#st-tab-updates").getAttribute("aria-selected")).toBe("true");
+    await p.keyboard.press("ArrowLeft");
     expect(await p.locator("#st-tab-privacy").getAttribute("aria-selected")).toBe("true");
     await p.keyboard.press("Home");
     await p.keyboard.press("ArrowDown");
@@ -307,6 +310,8 @@ test("settings is safe without daemon and keeps keyboard navigation", async () =
     expect(await p.locator("#st-memory .st-empty").first().innerText()).toContain("Carregando…");
     await tab(p, "privacy");
     expect(await p.locator("#st-private").isDisabled()).toBe(true);
+    await tab(p, "updates");
+    expect(await p.locator("#st-update-browser").innerText()).toContain("app desktop");
   } finally {
     await p.close();
   }

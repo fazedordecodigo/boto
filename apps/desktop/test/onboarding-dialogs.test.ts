@@ -8,6 +8,7 @@ import {
   startDaemon,
   tmp,
 } from "../../../packages/daemon/test/helpers";
+import { chrome } from "./chrome";
 import { startVite } from "./vite";
 
 test("onboarding persists real profile, handles errors, and exposes working shortcuts", async () => {
@@ -19,7 +20,7 @@ test("onboarding persists real profile, handles errors, and exposes working shor
   const client = await DaemonClient.connect(daemon.port, token);
   const vite = await startVite();
   const browser = await chromium.launch({
-    channel: "chrome",
+    ...chrome,
     headless: true,
     args: ["--no-sandbox"],
   });

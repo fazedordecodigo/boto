@@ -8,6 +8,7 @@ import { Memories } from "../settings/Memories";
 import { Permissions } from "../settings/Permissions";
 import { Providers } from "../settings/Providers";
 import { QueryState } from "../settings/QueryState";
+import { UpdateButton } from "../settings/UpdateButton";
 import { useDaemon } from "../shell/daemon";
 import { useRouter } from "../shell/router";
 import { Dialog } from "../ui/Dialog";
@@ -21,6 +22,7 @@ const tabs: { id: string; label: string; icon: IconName }[] = [
   { id: "memory", label: "Você e a memória", icon: "user-check" },
   { id: "appearance", label: "Aparência", icon: "palette" },
   { id: "privacy", label: "Privacidade", icon: "shield-check" },
+  { id: "updates", label: "Atualizações", icon: "download" },
 ];
 export function SettingsView() {
   const { params } = useRouter();
@@ -128,8 +130,8 @@ export function SettingsView() {
               Configurações
             </h1>
             <p className="page-sub">
-              Escolha o provedor de IA que os bots usam e ajuste a memória, a aparência e a
-              privacidade. Não tem conta no Boto: tudo fica neste navegador.
+              Escolha o provedor de IA que os bots usam e ajuste a memória, a aparência, a
+              privacidade e as atualizações. Não tem conta no Boto: tudo fica neste navegador.
             </p>
           </div>
         </div>
@@ -499,6 +501,28 @@ export function SettingsView() {
                   </div>
                 </div>
                 <Permissions />
+              </div>
+            </section>
+
+            <section
+              className="st-panel"
+              id="st-updates"
+              role="tabpanel"
+              aria-labelledby="st-tab-updates"
+              tabIndex={-1}
+              hidden={tab !== "updates"}
+            >
+              <div className="st-block">
+                <div className="st-block-head">
+                  <div className="od-field od-fill">
+                    <h2 className="st-title">Atualizações</h2>
+                    <p className="st-desc">
+                      O app para macOS, o instalador do Windows e o AppImage do Linux se atualizam
+                      por aqui. Os pacotes .deb e .rpm são atualizados pelo gerenciador de pacotes.
+                    </p>
+                  </div>
+                </div>
+                <UpdateButton />
               </div>
             </section>
           </div>

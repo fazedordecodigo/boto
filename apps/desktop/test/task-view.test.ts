@@ -10,6 +10,7 @@ import {
   readLog,
   startDaemon,
 } from "../../../packages/daemon/test/helpers";
+import { chrome } from "./chrome";
 import { startVite } from "./vite";
 
 test("task timeline, real desktop stream, takeover, split, VM dialog and mobile tabs", async () => {
@@ -32,7 +33,7 @@ test("task timeline, real desktop stream, takeover, split, VM dialog and mobile 
     FAKE_DESKTOP_FRAME_FILE: join(dir, "frame.jpg"),
   });
   const vite = await startVite();
-  const browser = await chromium.launch({ channel: "chrome", headless: true });
+  const browser = await chromium.launch({ ...chrome, headless: true });
   const client = await DaemonClient.connect(daemon.port, token);
   await client.request("onboarding.complete", {});
   try {

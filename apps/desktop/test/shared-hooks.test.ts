@@ -1,12 +1,13 @@
 import { afterAll, beforeAll, expect, test } from "bun:test";
 import { type Browser, chromium, type Page } from "playwright-core";
+import { chrome } from "./chrome";
 import { base, startVite } from "./vite";
 
 let vite: Awaited<ReturnType<typeof startVite>>;
 let browser: Browser;
 beforeAll(async () => {
   vite = await startVite();
-  browser = await chromium.launch({ channel: "chrome", headless: true });
+  browser = await chromium.launch({ ...chrome, headless: true });
 }, 60_000);
 afterAll(async () => {
   await browser?.close();

@@ -28,6 +28,11 @@
 
 ### Fixed
 
+- Restored the Linux ARM64 and Windows ARM64 release builds dropped with the redesign; without
+  them `latest.json` could not be composed and no release could publish. Browser tests honor
+  `CHROME_PATH` again for the ARM64 Linux runner, and a test keeps the matrix in sync.
+- Restored Verificar atualizações (Configurações > Atualizações), removed with the redesign, so
+  macOS, Windows and AppImage installs can update themselves again.
 - Open Guia da marca through the existing native opener in Tauri, with a browser fallback
   and an error toast; align the desktop Novo agente dialog width and style Settings theme swatches.
 - Renomear uma habilidade move seu histórico e remove o nome antigo, sem sobrescrever outra habilidade.

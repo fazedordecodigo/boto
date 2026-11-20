@@ -120,10 +120,12 @@ test("real settings: provider catalog, masked keys, profile, memories, appearanc
     );
     await p.locator("#st-tab-provider").focus();
     await p.keyboard.press("ArrowUp");
-    expect(await p.locator("#st-tab-privacy").getAttribute("aria-selected")).toBe("true");
+    expect(await p.locator("#st-tab-updates").getAttribute("aria-selected")).toBe("true");
     await p.keyboard.press("ArrowRight");
     expect(await p.locator("#st-tab-provider").getAttribute("aria-selected")).toBe("true");
     await p.keyboard.press("End");
+    expect(await p.locator("#st-tab-updates").getAttribute("aria-selected")).toBe("true");
+    await p.keyboard.press("ArrowLeft");
     expect(await p.locator("#st-tab-privacy").getAttribute("aria-selected")).toBe("true");
     await p.keyboard.press("Home");
     await p.keyboard.press("ArrowDown");

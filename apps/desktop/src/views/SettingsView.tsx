@@ -161,11 +161,11 @@ export function SettingsView() {
                     event.key === "Home"
                       ? 0
                       : event.key === "End"
-                        ? 3
+                        ? tabs.length - 1
                         : ["ArrowDown", "ArrowRight"].includes(event.key)
-                          ? (index + 1) % 4
+                          ? (index + 1) % tabs.length
                           : ["ArrowUp", "ArrowLeft"].includes(event.key)
-                            ? (index + 3) % 4
+                            ? (index + tabs.length - 1) % tabs.length
                             : null;
                   const nextTab = next === null ? undefined : tabs[next];
                   if (nextTab) {

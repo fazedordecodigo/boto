@@ -3,7 +3,7 @@ import { readdirSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
 const root = resolve(import.meta.dir, "../../..");
-const read = (path: string) => readFileSync(resolve(root, path), "utf8");
+const read = (path: string) => readFileSync(resolve(root, path), "utf8").replaceAll("\r\n", "\n");
 const workflow = read(".github/workflows/release.yml");
 const matrix = [...workflow.matchAll(/^ {10}- os: (\S+)\n {12}bundles: (\S+)$/gm)].map((match) => ({
   os: match[1],
@@ -40,6 +40,7 @@ function updaterPlatform(runner: string): string {
 test("release matrix builds every updater platform latest.json requires", () => {
   const required = Object.keys(platforms);
   expect(required.length).toBeGreaterThan(0);
+  expect(runners.length).toBeGreaterThan(0);
   expect(runners.length).toBe(workflow.match(/^ {10}- os: /gm)?.length ?? 0);
   expect(runners.map(updaterPlatform).sort()).toEqual(required.sort());
 });

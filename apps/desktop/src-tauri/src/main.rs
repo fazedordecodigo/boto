@@ -167,6 +167,13 @@ async fn daemon_connection(state: State<'_, SharedState>) -> Result<DaemonConnec
     }
 }
 
+/// Installer format of this build (`deb`, `rpm`, `appimage`, `nsis`, `msi`, `app`), or `None` for
+/// unbundled builds. The updater can only replace AppImage, NSIS/MSI and macOS app installs.
+#[tauri::command]
+fn bundle_type() -> Option<String> {
+    tauri::utils::platform::bundle_type().map(|bundle| bundle.to_string())
+}
+
 fn main() {
     let shared: SharedState = Arc::new(DaemonState {
         inner: Mutex::new(DaemonInner::default()),
@@ -200,6 +207,7 @@ fn main() {
         })
         .invoke_handler(tauri::generate_handler![
             daemon_connection,
+            bundle_type,
             badge::set_approval_badge,
             menubar::set_tray_count,
             menubar::open_main,

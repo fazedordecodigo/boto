@@ -1,11 +1,36 @@
-import { errorFields, logError, logInfo } from "./log";
+import { errorFields, logError, logInfo, logWarn } from "./log";
 
 export type UpdaterPhase = "check" | "install";
-export type UpdateLike = { version: string; downloadAndInstall(): Promise<void> };
+export type UpdateLike = {
+  version: string;
+  downloadAndInstall(): Promise<void>;
+  /** Frees the native resource the updater plugin holds for every update it returns. */
+  close(): Promise<void>;
+};
 export type UpdaterOutcome<U> =
   | { kind: "installed"; update: U }
   | { kind: "checked"; update: U | null }
   | { kind: "failed"; phase: UpdaterPhase; update: U | null; error: unknown };
+
+const SELF_UPDATING = new Set(["app", "dmg", "appimage", "nsis", "msi"]);
+
+/** `latest.json` only ships app, AppImage and NSIS updates; deb/rpm installs reject them. */
+export function selfUpdates(bundle: string | null): boolean {
+  return bundle !== null && SELF_UPDATING.has(bundle);
+}
+
+/** Releases an update the UI no longer shows; a failed close is logged, never thrown. */
+export async function releaseUpdate(
+  update: Pick<UpdateLike, "close"> | null,
+  log = { warn: logWarn },
+): Promise<void> {
+  if (!update) return;
+  try {
+    await update.close();
+  } catch (error) {
+    log.warn("updater.close_failed", errorFields(error));
+  }
+}
 
 const SEMVER_CORE = /^\d{1,9}\.\d{1,9}\.\d{1,9}$/;
 

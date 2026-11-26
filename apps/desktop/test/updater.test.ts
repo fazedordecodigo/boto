@@ -1,8 +1,15 @@
 import { expect, test } from "bun:test";
-import { logVersion, pendingUpdate, runUpdater, type UpdateLike } from "../src/lib/updater";
+import {
+  logVersion,
+  pendingUpdate,
+  releaseUpdate,
+  runUpdater,
+  selfUpdates,
+  type UpdateLike,
+} from "../src/lib/updater";
 
 function fakeUpdate(downloadAndInstall: () => Promise<void> = async () => {}) {
-  return { version: "2.10.1", downloadAndInstall } satisfies UpdateLike;
+  return { version: "2.10.1", downloadAndInstall, close: async () => {} } satisfies UpdateLike;
 }
 
 function logger() {
@@ -75,7 +82,11 @@ test("successful install logs and returns the installed update", async () => {
 
 test("remote version is logged only as plain x.y.z", async () => {
   const secret = "1.0.0-token=sk-secret-xyz";
-  const update = { version: secret, downloadAndInstall: () => Promise.reject(new Error("x")) };
+  const update = {
+    version: secret,
+    downloadAndInstall: () => Promise.reject(new Error("x")),
+    close: async () => {},
+  };
   const calls: [string, Record<string, unknown> | undefined][] = [];
   const log = {
     info: (scope: string, fields?: Record<string, unknown>) => calls.push([scope, fields]),
@@ -101,4 +112,23 @@ test("only a freshly checked update is installed; errors re-check", () => {
   expect(pendingUpdate("error", update)).toBeNull();
   expect(pendingUpdate("none", null)).toBeNull();
   expect(pendingUpdate("idle", update)).toBeNull();
+});
+
+test("only app, AppImage and Windows installs update themselves; deb, rpm and unbundled do not", () => {
+  for (const bundle of ["app", "dmg", "appimage", "nsis", "msi"])
+    expect(selfUpdates(bundle)).toBe(true);
+  for (const bundle of ["deb", "rpm", "unknown", null]) expect(selfUpdates(bundle)).toBe(false);
+});
+
+test("releasing an update closes it and logs, without throwing, when close fails", async () => {
+  let closed = 0;
+  await releaseUpdate({ close: async () => void closed++ });
+  await releaseUpdate(null);
+  expect(closed).toBe(1);
+  const warnings: [string, Record<string, unknown> | undefined][] = [];
+  await releaseUpdate(
+    { close: () => Promise.reject(new Error("resource gone")) },
+    { warn: (scope, fields) => warnings.push([scope, fields]) },
+  );
+  expect(warnings).toEqual([["updater.close_failed", { errorType: "Error" }]]);
 });

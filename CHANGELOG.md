@@ -32,7 +32,8 @@
   them `latest.json` could not be composed and no release could publish. Browser tests honor
   `CHROME_PATH` again for the ARM64 Linux runner, and a test keeps the matrix in sync.
 - Restored Verificar atualizações (Configurações > Atualizações), removed with the redesign, so
-  macOS, Windows and AppImage installs can update themselves again.
+  macOS, Windows and AppImage installs can update themselves again. `.deb` and `.rpm` installs
+  are told to update through the package manager instead of being offered an AppImage.
 - Open Guia da marca through the existing native opener in Tauri, with a browser fallback
   and an error toast; align the desktop Novo agente dialog width and style Settings theme swatches.
 - Renomear uma habilidade move seu histórico e remove o nome antigo, sem sobrescrever outra habilidade.

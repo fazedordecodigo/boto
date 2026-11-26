@@ -22,7 +22,8 @@
   Bump `version` in `tauri.conf.json` before tagging.
 - In-app updates: `tauri-plugin-updater` + `settings/UpdateButton.tsx` (Configurações >
   Atualizações; browser builds show a note instead). The Rust `bundle_type` command reports the
-  installer format; `.deb`/`.rpm` and unbundled builds get guidance instead of the button, since
+  installer format (on macOS only when the executable sits inside a `.app`, since Tauri reports
+  `app` for `tauri dev` too); `.deb`/`.rpm` and unbundled builds get guidance instead of the button, since
   `latest.json` only carries app, AppImage and NSIS updates. Every update the plugin returns is
   `close()`d when replaced, installed or unmounted. `test/release-workflow.test.ts` keeps the
   release matrix in sync with the updater platforms `compose-latest.py` requires; browser tests

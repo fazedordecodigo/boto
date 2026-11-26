@@ -11,6 +11,7 @@ import {
   type UpdateLike,
   type UpdaterPhase,
 } from "../lib/updater";
+import { Icon, type IconName } from "../ui/icons";
 
 type State = "idle" | "checking" | "none" | "available" | "installing" | "done" | "error";
 
@@ -54,14 +55,16 @@ export function UpdateButton({
   );
   if (!native)
     return (
-      <p className="st-desc" id="st-update-browser">
+      <p className="st-desc od-row" id="st-update-browser">
+        <Icon name="info" />
         As atualizações são instaladas pelo app desktop do Boto.
       </p>
     );
   if (bundle === undefined) return null;
   if (!selfUpdates(bundle))
     return (
-      <p className="st-desc" id="st-update-unsupported">
+      <p className="st-desc od-row" id="st-update-unsupported">
+        <Icon name="info" />
         {bundle === "deb" || bundle === "rpm"
           ? `Esta instalação veio de um pacote .${bundle}. Atualize o Boto pelo gerenciador de pacotes do sistema.`
           : "Esta cópia do Boto não foi instalada por um instalador e não se atualiza por aqui."}
@@ -102,20 +105,27 @@ export function UpdateButton({
     done: null,
     error: "Verificar novamente",
   }[state];
-  const status = {
-    none: "Tudo atualizado.",
-    available: `A versão ${update?.version ?? "nova"} está disponível.`,
-    done: "Atualização instalada. Reinicie o Boto para concluir.",
-  }[state as "none" | "available" | "done"];
+  const status = (
+    {
+      none: { icon: "circle-check", text: "Tudo atualizado." },
+      available: {
+        icon: "download",
+        text: `A versão ${update?.version ?? "nova"} está disponível.`,
+      },
+      done: { icon: "refresh-cw", text: "Atualização instalada. Reinicie o Boto para concluir." },
+    } satisfies Record<string, { icon: IconName; text: string }>
+  )[state as "none" | "available" | "done"];
   return (
     <div className="od-field">
       {status && (
-        <p className="st-desc" id="st-update-status" role="status">
-          {status}
+        <p className="st-desc od-row" id="st-update-status" role="status">
+          <Icon name={status.icon} />
+          {status.text}
         </p>
       )}
       {state === "error" && (
-        <p className="st-error" id="st-update-error" role="alert">
+        <p className="st-error od-row" id="st-update-error" role="alert">
+          <Icon name="circle-alert" />
           {failedPhase === "install"
             ? "Não foi possível instalar a atualização."
             : "Não foi possível verificar atualizações."}{" "}

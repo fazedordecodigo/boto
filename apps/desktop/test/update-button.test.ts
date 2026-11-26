@@ -30,6 +30,7 @@ async function open(query: string, run: (page: Page) => Promise<void>) {
 const calls = (page: Page) =>
   page.evaluate(() => (window as unknown as { updaterCalls: Calls }).updaterCalls);
 const button = (page: Page) => page.locator("#st-update");
+const icon = (page: Page, id: string) => page.locator(`#${id} svg.od-icon`).count();
 
 for (const bundle of ["deb", "rpm"]) {
   test(`${bundle} installs get package-manager guidance and never check for updates`, async () => {
@@ -38,6 +39,7 @@ for (const bundle of ["deb", "rpm"]) {
       expect(await page.locator("#st-update-unsupported").innerText()).toContain(
         `pacote .${bundle}. Atualize o Boto pelo gerenciador de pacotes`,
       );
+      expect(await icon(page, "st-update-unsupported")).toBe(1);
       expect(await button(page).count()).toBe(0);
       expect((await calls(page)).checks).toBe(0);
     });
@@ -59,6 +61,7 @@ for (const bundle of ["app", "appimage", "nsis", "msi"]) {
       await button(page).click();
       await page.locator("#st-update-status").waitFor();
       expect(await page.locator("#st-update-status").innerText()).toBe("Tudo atualizado.");
+      expect(await icon(page, "st-update-status")).toBe(1);
       expect(await button(page).innerText()).toBe("Verificar novamente");
       expect((await calls(page)).checks).toBe(1);
     });
@@ -105,6 +108,7 @@ test("a failed check keeps a re-check action", async () => {
     expect(await page.locator("#st-update-error").innerText()).toContain(
       "Não foi possível verificar atualizações. endpoint offline",
     );
+    expect(await icon(page, "st-update-error")).toBe(1);
     expect(await button(page).innerText()).toBe("Verificar novamente");
   });
 }, 30_000);

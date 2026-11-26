@@ -171,7 +171,27 @@ async fn daemon_connection(state: State<'_, SharedState>) -> Result<DaemonConnec
 /// unbundled builds. The updater can only replace AppImage, NSIS/MSI and macOS app installs.
 #[tauri::command]
 fn bundle_type() -> Option<String> {
-    tauri::utils::platform::bundle_type().map(|bundle| bundle.to_string())
+    let bundle = tauri::utils::platform::bundle_type()?;
+    // Tauri reports `app` for every macOS executable, including `tauri dev` builds.
+    if cfg!(target_os = "macos") && !in_app_bundle(&std::env::current_exe().ok()?) {
+        return None;
+    }
+    Some(bundle.to_string())
+}
+
+fn in_app_bundle(exe: &std::path::Path) -> bool {
+    let Some(macos) = exe.parent() else {
+        return false;
+    };
+    let Some(contents) = macos.parent() else {
+        return false;
+    };
+    macos.file_name() == Some(OsStr::new("MacOS"))
+        && contents.file_name() == Some(OsStr::new("Contents"))
+        && contents
+            .parent()
+            .and_then(|app| app.extension())
+            .is_some_and(|extension| extension == "app")
 }
 
 fn main() {
@@ -238,7 +258,7 @@ fn main() {
 
 #[cfg(test)]
 mod tests {
-    use super::{migrate_data_dir, parse_ready_port};
+    use super::{in_app_bundle, migrate_data_dir, parse_ready_port};
 
     #[test]
     fn migrates_legacy_data_without_overwriting_boto() {
@@ -265,6 +285,21 @@ mod tests {
             assert_eq!(std::fs::read(legacy.join("upbot.db")).unwrap(), b"other");
             std::fs::remove_dir_all(parent).unwrap();
         }
+    }
+
+    #[test]
+    fn only_executables_inside_an_app_bundle_count_as_bundled() {
+        use std::path::Path;
+        assert!(in_app_bundle(Path::new(
+            "/Applications/Boto.app/Contents/MacOS/boto-desktop"
+        )));
+        assert!(!in_app_bundle(Path::new(
+            "/repo/apps/desktop/src-tauri/target/debug/boto-desktop"
+        )));
+        assert!(!in_app_bundle(Path::new(
+            "/tmp/Boto/Contents/MacOS/boto-desktop"
+        )));
+        assert!(!in_app_bundle(Path::new("boto-desktop")));
     }
 
     #[test]

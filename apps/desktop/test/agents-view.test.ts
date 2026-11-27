@@ -11,6 +11,7 @@ import {
   stopTestChildren,
 } from "../../../packages/daemon/test/helpers";
 import { agentStatus, relativeTime } from "../src/agents/helpers";
+import { chrome } from "./chrome";
 import { startVite } from "./vite";
 
 let daemon: DaemonHandle;
@@ -41,7 +42,7 @@ beforeAll(async () => {
   rpc = await DaemonClient.connect(daemon.port, token);
   await rpc.request("onboarding.complete", {});
   vite = await startVite();
-  browser = await chromium.launch({ channel: "chrome", headless: true });
+  browser = await chromium.launch({ ...chrome, headless: true });
   page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
   page.on("websocket", (socket) => {
     socket.on("framesent", ({ payload }) => {

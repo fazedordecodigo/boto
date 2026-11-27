@@ -20,7 +20,14 @@
   SHA-256/RFC 3161 signing covers the app, sidecar and installer, with post-build verification.
   No signing secrets keeps macOS ad-hoc and Windows unsigned; updater signing is separate.
   Bump `version` in `tauri.conf.json` before tagging.
-- In-app updates: `tauri-plugin-updater` + `components/UpdateButton.tsx` (sidebar footer).
+- In-app updates: `tauri-plugin-updater` + `settings/UpdateButton.tsx` (Configurações >
+  Atualizações; browser builds show a note instead). The Rust `bundle_type` command reports the
+  installer format (on macOS only when the executable sits inside a `.app`, since Tauri reports
+  `app` for `tauri dev` too); `.deb`/`.rpm` and unbundled builds get guidance instead of the button, since
+  `latest.json` only carries app, AppImage and NSIS updates. Every update the plugin returns is
+  `close()`d when replaced, installed or unmounted. `test/release-workflow.test.ts` keeps the
+  release matrix in sync with the updater platforms `compose-latest.py` requires; browser tests
+  launch through `test/chrome.ts`, which honors `CHROME_PATH` for Linux ARM64.
   Repository URLs now use `fazedordecodigo/boto`. Installed clients polling the old
   `upbot` endpoint follow GitHub's repository redirect; do not recreate an `upbot`
   repository under the account, which would break that redirect. Release metadata uses

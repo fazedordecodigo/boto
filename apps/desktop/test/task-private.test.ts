@@ -8,6 +8,7 @@ import {
   stopDaemon,
   tmp,
 } from "../../../packages/daemon/test/helpers";
+import { chrome } from "./chrome";
 import { startVite } from "./vite";
 
 test("private task view keeps live replies and mandatory approvals without sharing them", async () => {
@@ -19,7 +20,7 @@ test("private task view keeps live replies and mandatory approvals without shari
   });
   const client = await DaemonClient.connect(daemon.port, token);
   const vite = await startVite();
-  const browser = await chromium.launch({ channel: "chrome", headless: true });
+  const browser = await chromium.launch({ ...chrome, headless: true });
   try {
     await client.request("onboarding.complete", {});
     const agent = await client.request("agents.create", { name: "Private bot", provider: "devin" });

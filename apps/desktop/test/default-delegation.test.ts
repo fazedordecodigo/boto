@@ -10,6 +10,7 @@ import {
   stopDaemon,
   tmp,
 } from "../../../packages/daemon/test/helpers";
+import { chrome } from "./chrome";
 import { base, startVite } from "./vite";
 
 test("composer uses the default marker, preserves valid routes and falls back after route deletion without a picker", async () => {
@@ -23,7 +24,7 @@ test("composer uses the default marker, preserves valid routes and falls back af
   });
   const rpc = await DaemonClient.connect(daemon.port, token);
   const vite = await startVite();
-  const browser = await chromium.launch({ channel: "chrome", headless: true });
+  const browser = await chromium.launch({ ...chrome, headless: true });
   try {
     const original = (await rpc.request("agents.list", {})).find((agent) => agent.isDefault)!;
     expect(Boolean(original)).toBe(true);

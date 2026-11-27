@@ -11,6 +11,7 @@ import {
   startDaemon,
   stopDaemon,
 } from "../../../packages/daemon/test/helpers";
+import { chrome } from "./chrome";
 import { startVite } from "./vite";
 
 let daemon: DaemonHandle;
@@ -31,7 +32,7 @@ beforeAll(async () => {
   rpc = await DaemonClient.connect(daemon.port, token);
   await rpc.request("onboarding.complete", {});
   vite = await startVite();
-  browser = await chromium.launch({ channel: "chrome", headless: true });
+  browser = await chromium.launch({ ...chrome, headless: true });
 }, 60000);
 
 test("home exposes a real daemon query error and retries after repair", async () => {

@@ -66,7 +66,11 @@ async function app(
   onTask?: (task: Task) => void,
   onAgentDeleted?: () => void,
 ) {
-  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  const page = await browser.newPage({
+    viewport: { width: 1440, height: 900 },
+    // Bun's test runner defaults to UTC, but Chrome defaults to the system timezone.
+    timezoneId: Intl.DateTimeFormat().resolvedOptions().timeZone,
+  });
   if (onTask || onAgentDeleted)
     page.on("websocket", (socket) =>
       socket.on("framereceived", ({ payload }) => {

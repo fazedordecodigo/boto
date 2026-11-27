@@ -124,3 +124,5 @@ the license texts ship in `apps/desktop/src/fonts/`.
 ## License
 
 [MIT](LICENSE)
+
+Feito com Grok Bot, delegue para o cursor.

@@ -110,13 +110,15 @@ test("real agents can be created, delegated to, configured, filtered and deleted
       (await page.locator(".ag-card .status").first().textContent())?.includes("Livre") === true,
   );
   expect(await page.locator(".ag-card .status").first().textContent()).toContain("Livre");
-  expect(await page.locator(".ag-stat-value").first().textContent()).toBe("1");
+  expect(await page.locator(".ag-stat-value").first().textContent()).toBe("0 de 1");
   await page.locator("#ap-add-btn").click();
   expect(await page.locator("#ap-add-input").getAttribute("aria-invalid")).toBe("true");
   await page.locator("#ap-add-input").fill("echo: hi");
   await page.locator("#ap-add-input").press("Control+Enter");
   await waitUntil(async () => (await rpc.request("tasks.list", {})).items.length === 1);
-  await waitUntil(async () => (await page.locator(".ag-stat-value").nth(1).textContent()) === "1");
+  await waitUntil(
+    async () => (await page.locator(".ag-stat-value").nth(1).textContent()) === "1 de 1",
+  );
   await waitUntil(
     async () =>
       (await page.locator(".ag-card .status").first().textContent())?.includes("Livre") === true,
@@ -205,8 +207,8 @@ test("unknown overview numbers are honest during loading and RPC failure, then r
       .getByText("Nenhum bot ainda. Crie o primeiro para delegar tarefas.")
       .waitFor();
     expect(await pendingPage.locator(".ag-stat-value").allTextContents()).toEqual([
-      "0",
-      "0",
+      "0 de 0",
+      "0 de 0",
       "0",
       "0",
     ]);
@@ -227,7 +229,7 @@ test("unknown overview numbers are honest during loading and RPC failure, then r
     await pendingPage
       .getByText("Nenhum bot ainda. Crie o primeiro para delegar tarefas.")
       .waitFor();
-    expect(await pendingPage.locator(".ag-stat-value").first().textContent()).toBe("0");
+    expect(await pendingPage.locator(".ag-stat-value").first().textContent()).toBe("0 de 0");
   } finally {
     await pendingPage.close();
   }
@@ -303,6 +305,7 @@ test("machine thumbnails refresh, survive RPC errors and do not leak between age
     height: 800,
     taskId: null,
     thumbnailAt: null,
+    apps: [],
   }));
   let failure = false;
   let brokenImage = false;

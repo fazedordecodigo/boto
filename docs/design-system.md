@@ -34,8 +34,8 @@ usam “a definir”, não zero inventado.
 
 O shell reúne Início, Nova tarefa, Tarefa/Área de trabalho, Agentes (painel e criação),
 Rotinas, Modelos, Marketplace e Configurações (Provedor de IA, Você e a memória,
-Aparência e Privacidade). Onboarding tem quatro passos; busca, atalhos, menu da conta,
-tema, redimensionamento e painel móvel pertencem ao shell. O chip de situação é
+Aparência, Privacidade e Atualizações). Onboarding tem quatro passos; busca, atalhos,
+menu da conta, tema, redimensionamento e painel móvel pertencem ao shell. O chip de situação é
 compartilhado em `src/styles/ui.css`, sempre com tom, ícone e texto.
 
 O [README do desktop](../apps/desktop/README.md#views-and-daemon-wiring) lista os

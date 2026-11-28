@@ -40,6 +40,7 @@ as “a definir”. Product data comes from the daemon, not sample datasets.
 | Configurações: Provedor de IA | `providers.list`, `providers.scan`, `providers.login`, `providers.setDefault`, `providers.setApiKey`, `providers.deleteApiKey` |
 | Configurações: Você e a memória | `profile.get`, `profile.update`, `profile.forget`, `memories.list`, `memories.update`, `memories.delete` |
 | Configurações: Aparência / Privacidade | `profile.update`, `permissions.list`, `permissions.respond` |
+| Configurações: Atualizações | None: `tauri-plugin-updater` plus the Rust `bundle_type` command; `.deb`, `.rpm`, unbundled and browser builds show guidance instead of the button |
 | Shell / onboarding | `tasks.list`, `tasks.search`, `agents.overview`, `routines.list`, `profile.get`, `profile.update`, `onboarding.complete` |
 
 Subscriptions refresh snapshots after daemon events and reconnects. Loading, empty
